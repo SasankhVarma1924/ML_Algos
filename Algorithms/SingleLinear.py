@@ -11,6 +11,7 @@ def z_normalization(x):
     return xc,mu,sigma
 
 
+
 class SingleLinearReg:
     x_train = None
     y_train = None
