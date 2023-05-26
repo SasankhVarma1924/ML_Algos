@@ -4,6 +4,13 @@ import pandas as pd
 import array as arr
 
 
+def z_normalization(x):
+    mu = np.mean(x,axis=0)
+    sigma = np.var(x,axis=0)
+    xc = (x-mu)/sigma
+    return xc,mu,sigma
+
+
 class SingleLinearReg:
     x_train = None
     y_train = None
@@ -72,15 +79,22 @@ class SingleLinearReg:
         self.b -= (b_grad * self.lr)
 
 
-df = pd.read_csv("../DataSets/test.csv")
-x_train = np.array(df["x"])
-y_train = np.array(df["y"])
+df = pd.read_csv("../DataSets/houses.csv")
 
-obj = SingleLinearReg(x_train, y_train, 0.0001)
-obj.fit(100)
-obj.print_coeff()
-print(obj.cost_funtion())
-obj.plot_data()
-obj.plot_cost_iter()
+df = df.drop(['bedrooms', 'floors', 'age'],axis=1)
+
+x_train = np.array(df["sqft"])
+y_train = np.array(df["price"])
+
+x_train, x_mu, x_sigma = z_normalization(x_train)
+
+o = SingleLinearReg(x_train, y_train, 0.1)
+o.fit(1000)
+o.plot_cost_iter()
+
+x_house = np.array([1200])
+z_house = (x_house - x_mu)/x_sigma
+
+print(o.predict(z_house))
 
 
